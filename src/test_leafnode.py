@@ -11,13 +11,6 @@ class TestLeafNode(unittest.TestCase):
         self.assertIsNone(node.children)
         self.assertIsNone(node.props)
 
-    def test_init_fails_without_value(self):
-        # Test that initialization fails when no value is provided
-        with self.assertRaises(ValueError) as context:
-            LeafNode()
-        self.assertTrue(
-            "All leaf nodes must have a value." in str(context.exception))
-
     def test_init_with_all_parameters(self):
         # Test initialization with all parameters
         node = LeafNode(
