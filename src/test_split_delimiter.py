@@ -1,6 +1,6 @@
 import unittest
 from inline_markdown import (
-    split_nodes_delimiter,
+    split_nodes_delimiter, extract_markdown_links, extract_markdown_images
 )
 
 from textnode import TextNode, TextType
@@ -85,6 +85,11 @@ class TestInlineMarkdown(unittest.TestCase):
             ],
             new_nodes,
         )
+
+    def test_extr_img(self):
+        text1 = "Here's a [simple link](example.com) to check"
+        assert extract_markdown_links(
+            text1) == [('simple link', 'example.com')]
 
 
 if __name__ == "__main__":
