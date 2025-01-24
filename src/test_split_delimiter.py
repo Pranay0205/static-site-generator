@@ -1,6 +1,6 @@
 import unittest
 from inline_markdown import (
-    split_nodes_delimiter, extract_markdown_links, extract_markdown_images, split_nodes_image, split_nodes_link
+    split_nodes_delimiter, extract_markdown_links, extract_markdown_images, split_nodes_image, split_nodes_link, text_to_textnodes
 )
 
 from textnode import TextNode, TextType
@@ -156,6 +156,63 @@ class TestInlineMarkdown(unittest.TestCase):
             ],
             new_nodes,
         )
+
+    def test_text_to_textnodes(self):
+        text = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        actual = text_to_textnodes(text)
+
+        expected = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("text", TextType.BOLD),
+            TextNode(" with an ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" word and a ", TextType.TEXT),
+            TextNode("code block", TextType.CODE),
+            TextNode(" and an ", TextType.TEXT),
+            TextNode("obi wan image", TextType.IMAGE,
+                     "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "https://boot.dev"),
+        ]
+
+        self.assertEqual(expected, actual)
+
+    def test_text_to_textnodes_only_bold(self):
+        text = "This is text is testing **bold**"
+        actual = text_to_textnodes(text)
+
+        expected = [
+            TextNode("This is text is testing ", TextType.TEXT),
+            TextNode("bold", TextType.BOLD),
+        ]
+
+        self.assertEqual(expected, actual)
+
+    def test_text_to_textnodes_with_code_in_between(self):
+        text = "some code in between text `x = 10; y = 20; z = x + y; print(z)` lets see if it works"
+        actual = text_to_textnodes(text)
+
+        expected = [
+            TextNode("some code in between text ", TextType.TEXT),
+            TextNode("x = 10; y = 20; z = x + y; print(z)", TextType.CODE),
+            TextNode(" lets see if it works", TextType.TEXT),
+        ]
+
+        self.assertEqual(expected, actual)
+
+    def test_text_to_textnodes_only_code(self):
+        text = "testing **bold** and *italics* for our test"
+        actual = text_to_textnodes(text)
+
+        expected = [
+            TextNode("testing ", TextType.TEXT),
+            TextNode("bold", TextType.BOLD),
+            TextNode(" and ", TextType.TEXT),
+            TextNode("italics", TextType.ITALIC),
+            TextNode(" for our test", TextType.TEXT),
+        ]
+
+        self.assertEqual(expected, actual)
 
 
 if __name__ == "__main__":

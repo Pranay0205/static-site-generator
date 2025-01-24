@@ -3,6 +3,14 @@ from textnode import TextType, TextNode
 import re
 
 
+"""
+    Split nodes based on delimiter and convert delimited text to specified type.
+    >>> node = TextNode("This is text with a **bolded** word", TextType.TEXT)
+    >>> split_nodes_delimiter([node], "**", TextType.BOLD)
+    [TextNode("This is text with a ", TextType.TEXT), TextNode("bolded", TextType.BOLD), TextNode(" word", TextType.TEXT)] 
+"""
+
+
 def split_nodes_delimiter(old_nodes: List[TextNode], delimiter: str, text_type: TextType):
     result = []
     for old_node in old_nodes:
@@ -93,4 +101,17 @@ def split_nodes_link(old_nodes):
             original_text = sections[1]
         if original_text != "":
             new_nodes.append(TextNode(original_text, TextType.TEXT))
+    return new_nodes
+
+
+def text_to_textnodes(text):
+    if text == "":
+        raise ValueError("Text cannot be empty")
+
+    node = TextNode(text, TextType.TEXT)
+    new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
+    new_nodes = split_nodes_delimiter(new_nodes, "`", TextType.CODE)
+    new_nodes = split_nodes_delimiter(new_nodes, "*", TextType.ITALIC)
+    new_nodes = split_nodes_link(new_nodes)
+    new_nodes = split_nodes_image(new_nodes)
     return new_nodes
