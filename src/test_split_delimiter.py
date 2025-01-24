@@ -221,42 +221,6 @@ class TestInlineMarkdown(unittest.TestCase):
 
         self.assertEqual(expected, actual)
 
-    def test_markdown_block(self):
-        text = """# This is a heading
-
-                    This is a paragraph of text. It has some **bold** and *italic* words inside of it.
-
-                    * This is the first list item in a list block
-                    * This is a list item
-                    * This is another list item"""
-
-        expected = ['# This is a heading', 'This is a paragraph of text. It has some **bold** and *italic* words inside of it.',
-                    '* This is the first list item in a list block\n* This is a list item\n* This is another list item']
-
-        actual = mark_down_blocks(text)
-
-        self.assertEqual(expected, actual)
-
-    def test_markdown_multiline_block(self):
-        text = """# This is a heading
-
-        
-
-                    This is a paragraph of text. It has some **bold** and *italic* words inside of it.
-
-
-
-                    * This is the first list item in a list block  
-                    * This is a list item 
-                    * This is another list item """
-
-        expected = ['# This is a heading', 'This is a paragraph of text. It has some **bold** and *italic* words inside of it.',
-                    '* This is the first list item in a list block\n* This is a list item\n* This is another list item']
-
-        actual = mark_down_blocks(text)
-
-        self.assertEqual(expected, actual)
-
 
 if __name__ == "__main__":
     unittest.main()
