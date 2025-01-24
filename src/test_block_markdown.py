@@ -47,7 +47,7 @@ class TestBlockMarkdown(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_block_to_block_type_code(self):
-        actual = block_to_block_type("```")
+        actual = block_to_block_type("``````")
         expected = BlockType.code
         self.assertEqual(expected, actual)
 
@@ -62,7 +62,8 @@ class TestBlockMarkdown(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_block_to_block_type_ordered_list(self):
-        actual = block_to_block_type("1. This is a list item")
+        actual = block_to_block_type(
+            "1. This is a list item\n2. This is another list item\n3. This is a third list item")
         expected = BlockType.ordered_list
         self.assertEqual(expected, actual)
 
