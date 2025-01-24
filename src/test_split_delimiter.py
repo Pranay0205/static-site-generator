@@ -1,6 +1,6 @@
 import unittest
 from inline_markdown import (
-    split_nodes_delimiter, extract_markdown_links, extract_markdown_images, split_nodes_image, split_nodes_link, text_to_textnodes
+    mark_down_blocks, split_nodes_delimiter, extract_markdown_links, extract_markdown_images, split_nodes_image, split_nodes_link, text_to_textnodes
 )
 
 from textnode import TextNode, TextType
@@ -86,10 +86,17 @@ class TestInlineMarkdown(unittest.TestCase):
             new_nodes,
         )
 
-    def test_extr_img(self):
+    def test_extr_links(self):
         text1 = "Here's a [simple link](example.com) to check"
-        assert extract_markdown_links(
-            text1) == [('simple link', 'example.com')]
+
+        actual = extract_markdown_links(text1)
+        expected = [('simple link', 'example.com')]
+        self.assertEqual(actual, expected)
+
+    def test_extr_images(self):
+        text1 = "Here's a ![image](https://i.imgur.com/zjjcJKZ.png) to check"
+        assert extract_markdown_images(
+            text1) == [("image", "https://i.imgur.com/zjjcJKZ.png")]
 
     def test_split_image(self):
         node = TextNode(
@@ -211,6 +218,42 @@ class TestInlineMarkdown(unittest.TestCase):
             TextNode("italics", TextType.ITALIC),
             TextNode(" for our test", TextType.TEXT),
         ]
+
+        self.assertEqual(expected, actual)
+
+    def test_markdown_block(self):
+        text = """# This is a heading
+
+                    This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+
+                    * This is the first list item in a list block
+                    * This is a list item
+                    * This is another list item"""
+
+        expected = ['# This is a heading', 'This is a paragraph of text. It has some **bold** and *italic* words inside of it.',
+                    '* This is the first list item in a list block\n* This is a list item\n* This is another list item']
+
+        actual = mark_down_blocks(text)
+
+        self.assertEqual(expected, actual)
+
+    def test_markdown_multiline_block(self):
+        text = """# This is a heading
+
+        
+
+                    This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+
+
+
+                    * This is the first list item in a list block  
+                    * This is a list item 
+                    * This is another list item """
+
+        expected = ['# This is a heading', 'This is a paragraph of text. It has some **bold** and *italic* words inside of it.',
+                    '* This is the first list item in a list block\n* This is a list item\n* This is another list item']
+
+        actual = mark_down_blocks(text)
 
         self.assertEqual(expected, actual)
 

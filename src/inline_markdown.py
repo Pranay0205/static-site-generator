@@ -108,10 +108,25 @@ def text_to_textnodes(text):
     if text == "":
         raise ValueError("Text cannot be empty")
 
-    node = TextNode(text, TextType.TEXT)
-    new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
-    new_nodes = split_nodes_delimiter(new_nodes, "`", TextType.CODE)
-    new_nodes = split_nodes_delimiter(new_nodes, "*", TextType.ITALIC)
-    new_nodes = split_nodes_link(new_nodes)
-    new_nodes = split_nodes_image(new_nodes)
-    return new_nodes
+    nodes = [TextNode(text, TextType.TEXT)]
+    nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
+    nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
+    nodes = split_nodes_delimiter(nodes, "*", TextType.ITALIC)
+    nodes = split_nodes_link(nodes)
+    nodes = split_nodes_image(nodes)
+    return nodes
+
+
+def mark_down_blocks(markdown):
+    markdown_blocks_unfiltered = markdown.split("\n\n")
+    blocks = []
+
+    for block in markdown_blocks_unfiltered:
+        if block.strip():
+            if "\n" in block:
+                cleaned_line = [line.strip() for line in block.split("\n")]
+                blocks.append("\n".join(cleaned_line))
+            else:
+                blocks.append(block.strip())
+
+    return blocks
