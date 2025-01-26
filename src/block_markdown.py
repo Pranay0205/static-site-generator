@@ -11,6 +11,21 @@ class BlockType(Enum):
     ordered_list = "ordered_list"
 
 
+def markdown_to_blocks(text):
+    markdown_blocks_unfiltered = text.split("\n\n")
+    blocks = []
+
+    for block in markdown_blocks_unfiltered:
+        if block.strip():
+            if "\n" in block:
+                cleaned_line = [line.strip() for line in block.split("\n")]
+                blocks.append("\n".join(cleaned_line))
+            else:
+                blocks.append(block.strip())
+
+    return blocks
+
+
 def check_order(block):
     if block[0] != "1":
         raise ValueError("Ordered list does not in order")

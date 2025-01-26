@@ -1,6 +1,6 @@
 import unittest
 from block_markdown import BlockType, block_to_block_type
-from inline_markdown import mark_down_blocks
+from block_markdown import markdown_to_blocks
 
 
 class TestBlockMarkdown(unittest.TestCase):
@@ -17,7 +17,7 @@ class TestBlockMarkdown(unittest.TestCase):
         expected = ['# This is a heading', 'This is a paragraph of text. It has some **bold** and *italic* words inside of it.',
                     '* This is the first list item in a list block\n* This is a list item\n* This is another list item']
 
-        actual = mark_down_blocks(text)
+        actual = markdown_to_blocks(text)
 
         self.assertEqual(expected, actual)
 
@@ -37,7 +37,7 @@ class TestBlockMarkdown(unittest.TestCase):
         expected = ['# This is a heading', 'This is a paragraph of text. It has some **bold** and *italic* words inside of it.',
                     '* This is the first list item in a list block\n* This is a list item\n* This is another list item']
 
-        actual = mark_down_blocks(text)
+        actual = markdown_to_blocks(text)
 
         self.assertEqual(expected, actual)
 
