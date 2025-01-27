@@ -37,18 +37,22 @@ def parse_paragraph(block):
 
 
 def parse_unordered_list(block):
-
-    textnodes = []
+    li_nodes = []
     for line in block.split("\n"):
+        textnodes = []
         if line.startswith("*") or line.startswith("-"):
-            textnodes.extend(text_to_textnodes(line.strip()[1:].strip()))
+            text = line.strip()[1:].strip()
+            textnodes.extend(text_to_textnodes(text))
 
-    children = ParentNode("li", [])
+        li_children = ParentNode("li", [])
 
-    for textnode in textnodes:
-        children.children.append(text_node_to_html_node(textnode))
+        for textnode in textnodes:
+            htmlnode = text_node_to_html_node(textnode)
+            li_children.children.append(htmlnode)
 
-    return ParentNode("ul", [children])
+        li_nodes.append(li_children)
+
+    return ParentNode("ul", [li_nodes])
 
 
 def parse_ordered_list(block):
