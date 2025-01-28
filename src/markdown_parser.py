@@ -52,10 +52,41 @@ def parse_unordered_list(block):
 
         li_nodes.append(li_children)
 
-    return ParentNode("ul", [li_nodes])
+    return [ParentNode("ul", [li_nodes])]
 
 
 def parse_ordered_list(block):
+    textnodes = []
+    for line in block.split("\n"):
+        if line[0].isdigit():
+            text = line.strip()[2:].strip()
+            textnodes.extend(text_to_textnodes(text))
+
+    li_children = ParentNode("li", [])
+
+    for textnode in textnodes:
+        htmlnode = text_node_to_html_node(textnode)
+        li_children.children.append(htmlnode)
+
+    return [ParentNode("ol", [li_children])]
+
+
+def parse_blockquote(block):
+    textnodes = text_to_textnodes(block)
+    for i, textnode in enumerate(textnodes):
+        if i == 0:
+            textnode.text = textnode.text[2:].strip()
+            htmlnode = ParentNode(
+                "blockquote", [text_node_to_html_node(textnode)])
+        htmlnode.children.append(text_node_to_html_node(textnode))
+
+    return [htmlnode]
+
+
+def parse_codeblock(block):
+    # To Do
+    # textnodes = text_to_textnodes(block)
+    # print(textnodes)
     pass
 
 
@@ -69,13 +100,12 @@ def markdown_to_html_node(markdown):
         if block_type == BlockType.paragraph:
             htmlnodes.extend(parse_paragraph(block))
         if block_type == BlockType.unordered_list:
-            print(parse_unordered_list(block))
+            htmlnodes.extend(parse_unordered_list(block))
+        if block_type == BlockType.ordered_list:
+            htmlnodes.extend(parse_ordered_list(block))
+        if block_type == BlockType.blockquote:
+            htmlnodes.extend(parse_blockquote(block))
+    print(HTMLNode("div", htmlnodes))
 
 
-markdown_to_html_node("""## This is a **heading**\n\n### This is a heading
-
-This is a paragraph of text. It has some **bold** and *italic* words inside of it.
-
-* First is the first list **item** in a list block
-* Second is a list item
-* Third is another list item""")
+markdown_to_html_node("""`print("Hello, World!");\nprint("Hello, World!");`""")

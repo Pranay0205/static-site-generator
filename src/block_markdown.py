@@ -6,7 +6,7 @@ class BlockType(Enum):
     paragraph = "paragraph",
     heading = "heading",
     code = "code",
-    quote = "quote",
+    blockquote = "blockquote",
     unordered_list = "unordered_list",
     ordered_list = "ordered_list"
 
@@ -49,7 +49,7 @@ def block_to_block_type(markdown_block):
     if re.match(code_regex, markdown_block):
         return BlockType.code
     if re.match(quote_regex, markdown_block):
-        return BlockType.quote
+        return BlockType.blockquote
     if re.match(unordered_list_regex, markdown_block):
         return BlockType.unordered_list
     if re.match(ordered_list_regex, markdown_block):

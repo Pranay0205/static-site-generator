@@ -53,7 +53,7 @@ class TestBlockMarkdown(unittest.TestCase):
 
     def test_block_to_block_type_quote(self):
         actual = block_to_block_type("> This is a quote")
-        expected = BlockType.quote
+        expected = BlockType.blockquote
         self.assertEqual(expected, actual)
 
     def test_block_to_block_type_unordered_list(self):
