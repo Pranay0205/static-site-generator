@@ -17,7 +17,7 @@ def parse_heading(block):
                 level = textnode.text.count("#")
                 textnode.text = textnode.text.strip("# ")
                 parent = ParentNode(
-                    f"h{level}", [text_node_to_html_node(textnode)])
+                    f"h{level}", text_node_to_html_node(textnode))
                 htmlnodes.append(parent)
             else:
                 htmlnode = text_node_to_html_node(textnode)
@@ -120,9 +120,4 @@ def markdown_to_html_node(markdown):
         else:
             ValueError("Unrecognizable markdown")
 
-    print(HTMLNode("div", htmlnodes))
     return HTMLNode("div", htmlnodes)
-
-
-markdown_to_html_node(
-    """# Heading Parsing\n\n## Another Heading Passing\n\n1. one\n2. two\n3. three\n\n* ONE\n*TWO\n\n\n```print("Hello, World!");\nprint("Hello, World!");```""")
