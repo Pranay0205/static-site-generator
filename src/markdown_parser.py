@@ -11,6 +11,8 @@ def parse_heading(block):
     for line in block.split("\n"):
         textnodes = text_to_textnodes(line)
         for textnode in textnodes:
+            if textnode.text == "":
+                continue
             if textnode.text.startswith("#"):
                 level = textnode.text.count("#")
                 textnode.text = textnode.text.strip("# ")
@@ -24,14 +26,16 @@ def parse_heading(block):
                 else:
                     htmlnodes.append(htmlnode)
 
-    return [htmlnodes]
+    return htmlnodes
 
 
 def parse_paragraph(block):
+    htmlnode = None
     textnodes = text_to_textnodes(block)
     for i, textnode in enumerate(textnodes):
         if i == 0:
             htmlnode = ParentNode("p", [text_node_to_html_node(textnode)])
+            continue
         htmlnode.children.append(text_node_to_html_node(textnode))
     return [htmlnode]
 
@@ -78,16 +82,22 @@ def parse_blockquote(block):
             textnode.text = textnode.text[2:].strip()
             htmlnode = ParentNode(
                 "blockquote", [text_node_to_html_node(textnode)])
+            continue
         htmlnode.children.append(text_node_to_html_node(textnode))
 
     return [htmlnode]
 
 
 def parse_codeblock(block):
-    # To Do
-    # textnodes = text_to_textnodes(block)
-    # print(textnodes)
-    pass
+    textnodes = text_to_textnodes(block)
+    for i, textnode in enumerate(textnodes):
+        if i == 0:
+            htmlnode = ParentNode("code", [text_node_to_html_node(textnode)])
+            continue
+        htmlnode.children.append(text_node_to_html_node(textnode))
+    print(htmlnode)
+
+    return [htmlnode]
 
 
 def markdown_to_html_node(markdown):
@@ -105,7 +115,14 @@ def markdown_to_html_node(markdown):
             htmlnodes.extend(parse_ordered_list(block))
         if block_type == BlockType.blockquote:
             htmlnodes.extend(parse_blockquote(block))
+        if block_type == BlockType.code:
+            htmlnodes.extend(parse_codeblock(block))
+        else:
+            ValueError("Unrecognizable markdown")
+
     print(HTMLNode("div", htmlnodes))
+    return HTMLNode("div", htmlnodes)
 
 
-markdown_to_html_node("""`print("Hello, World!");\nprint("Hello, World!");`""")
+markdown_to_html_node(
+    """# Heading Parsing\n\n## Another Heading Passing\n\n1. one\n2. two\n3. three\n\n* ONE\n*TWO\n\n\n```print("Hello, World!");\nprint("Hello, World!");```""")
