@@ -20,6 +20,7 @@ def split_nodes_delimiter(old_nodes: List[TextNode], delimiter: str, text_type: 
 
         splitted_nodes = []
         textnode_sections = old_node.text.split(delimiter)
+        print()
         if len(textnode_sections) % 2 == 0:
             raise ValueError("Something wrong with the text formatting")
 

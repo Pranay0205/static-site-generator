@@ -17,7 +17,7 @@ def parse_heading(block):
                 level = textnode.text.count("#")
                 textnode.text = textnode.text.strip("# ")
                 parent = ParentNode(
-                    f"h{level}", text_node_to_html_node(textnode))
+                    f"h{level}", [text_node_to_html_node(textnode)])
                 htmlnodes.append(parent)
             else:
                 htmlnode = text_node_to_html_node(textnode)
@@ -44,7 +44,7 @@ def parse_unordered_list(block):
     li_nodes = []
     for line in block.split("\n"):
         textnodes = []
-        if line.startswith("*") or line.startswith("-"):
+        if line.startswith("* ") or line.startswith("-"):
             text = line.strip()[1:].strip()
             textnodes.extend(text_to_textnodes(text))
 
@@ -56,7 +56,7 @@ def parse_unordered_list(block):
 
         li_nodes.append(li_children)
 
-    return [ParentNode("ul", [li_nodes])]
+    return [ParentNode("ul", li_nodes)]
 
 
 def parse_ordered_list(block):
@@ -89,13 +89,12 @@ def parse_blockquote(block):
 
 
 def parse_codeblock(block):
-    textnodes = text_to_textnodes(block)
-    for i, textnode in enumerate(textnodes):
-        if i == 0:
-            htmlnode = ParentNode("code", [text_node_to_html_node(textnode)])
-            continue
+    print(block)
+    text = block[4:-4]
+    textnodes = text_to_textnodes(text)
+    htmlnode = ParentNode("code", [])
+    for textnode in textnodes:
         htmlnode.children.append(text_node_to_html_node(textnode))
-    print(htmlnode)
 
     return [htmlnode]
 
@@ -120,4 +119,4 @@ def markdown_to_html_node(markdown):
         else:
             ValueError("Unrecognizable markdown")
 
-    return HTMLNode("div", htmlnodes)
+    return ParentNode("div", htmlnodes)

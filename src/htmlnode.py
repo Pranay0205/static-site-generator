@@ -14,8 +14,12 @@ class HTMLNode:
         if self.props is None:
             return output_string
 
-        for key, value in self.props.items():
-            output_string += f' {key}="{value}"'
+        for prop in self.props:
+            # Each prop is a string like '"href": "/majesty"'
+            # Remove quotes and split by :
+            clean_prop = prop.replace('"', '')
+            key, value = clean_prop.split(':')
+            output_string += f' {key.strip()}="{value.strip()}"'
 
         return output_string
 
