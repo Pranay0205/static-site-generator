@@ -20,7 +20,6 @@ def split_nodes_delimiter(old_nodes: List[TextNode], delimiter: str, text_type: 
 
         splitted_nodes = []
         textnode_sections = old_node.text.split(delimiter)
-        print()
         if len(textnode_sections) % 2 == 0:
             raise ValueError("Something wrong with the text formatting")
 
@@ -112,6 +111,7 @@ def text_to_textnodes(text):
     nodes = [TextNode(text, TextType.TEXT)]
     nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
     nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
+    nodes = split_nodes_delimiter(nodes, "_", TextType.ITALIC)
     nodes = split_nodes_delimiter(nodes, "*", TextType.ITALIC)
     nodes = split_nodes_link(nodes)
     nodes = split_nodes_image(nodes)

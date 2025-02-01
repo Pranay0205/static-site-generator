@@ -47,7 +47,6 @@ def block_to_block_type(markdown_block):
     if re.match(heading_regex, markdown_block):
         return BlockType.heading
     if re.match(code_regex, markdown_block):
-        print("Current block:", repr(markdown_block))
         return BlockType.code
     if re.match(quote_regex, markdown_block):
         return BlockType.blockquote

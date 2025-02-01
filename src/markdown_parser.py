@@ -60,19 +60,21 @@ def parse_unordered_list(block):
 
 
 def parse_ordered_list(block):
-    textnodes = []
+    li_nodes = []
+
     for line in block.split("\n"):
-        if line[0].isdigit():
-            text = line.strip()[2:].strip()
-            textnodes.extend(text_to_textnodes(text))
+        line = line.strip()
+        if not line or not line[0].isdigit():
+            continue  # Skip empty lines or non-numbered lines
 
-    li_children = ParentNode("li", [])
+        # Extract text after number
+        text = line.split(" ", 1)[1] if " " in line else ""
+        textnodes = text_to_textnodes(text)  # Convert text to text nodes
 
-    for textnode in textnodes:
-        htmlnode = text_node_to_html_node(textnode)
-        li_children.children.append(htmlnode)
+        li_nodes.append(ParentNode(
+            "li", [text_node_to_html_node(tn) for tn in textnodes]))
 
-    return [ParentNode("ol", [li_children])]
+    return [ParentNode("ol", li_nodes)]  # Wrap all <li> elements inside <ol>
 
 
 def parse_blockquote(block):
@@ -89,14 +91,13 @@ def parse_blockquote(block):
 
 
 def parse_codeblock(block):
-    print(block)
     text = block[4:-4]
     textnodes = text_to_textnodes(text)
     htmlnode = ParentNode("code", [])
     for textnode in textnodes:
         htmlnode.children.append(text_node_to_html_node(textnode))
 
-    return [htmlnode]
+    return [ParentNode("pre", [htmlnode])]
 
 
 def markdown_to_html_node(markdown):
