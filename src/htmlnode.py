@@ -9,19 +9,12 @@ class HTMLNode:
         raise NotImplemented
 
     def props_to_html(self):
-        output_string = ""
-
         if self.props is None:
-            return output_string
-
+            return ""
+        props_html = ""
         for prop in self.props:
-            # Each prop is a string like '"href": "/majesty"'
-            # Remove quotes and split by :
-            clean_prop = prop.replace('"', '')
-            key, value = clean_prop.split(':')
-            output_string += f' {key.strip()}="{value.strip()}"'
-
-        return output_string
+            props_html += f' {prop}="{self.props[prop]}"'
+        return props_html
 
     def __repr__(self):
         return f"HTMLNode({self.tag}, {self.value}, {self.children}, {self.props})"
