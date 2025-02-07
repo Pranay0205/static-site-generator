@@ -39,7 +39,7 @@ def check_order(block):
 
 def block_to_block_type(markdown_block):
     heading_regex = r"^(#{1,6}) (.*)"  # heading
-    code_regex = r"^```.*\n[\s\S]*```\s*$"
+    code_regex = r"^```[\s\S]*```\s*$"
     quote_regex = r"^>"  # quote
     unordered_list_regex = r"^(?:\* |\- )"  # unordered_list
     ordered_list_regex = r"^\d+\. "  # ordered_list

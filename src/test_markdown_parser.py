@@ -23,7 +23,7 @@ class TestParseHeading(unittest.TestCase):
 
         node = result[0]
         self.assertEqual(node.tag, "h1")
-        self.assertEqual(node.children.value, "Heading 1")
+        self.assertEqual(node.children[0].value, "Heading 1")
 
     def test_multiple_headings(self):
         block = "# Heading 1\n## Heading 2"
@@ -31,15 +31,8 @@ class TestParseHeading(unittest.TestCase):
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0].tag, "h1")
         self.assertEqual(result[1].tag, "h2")
-        self.assertEqual(result[0].children.value, "Heading 1")
-        self.assertEqual(result[1].children.value, "Heading 2")
-
-    def test_paragrph(self):
-        block = "This is a paragraph with multiple lines.\nWhich should get parsed"
-
-        result = parse_paragraph(block)
-
-        print(result)
+        self.assertEqual(result[0].children[0].value, "Heading 1")
+        self.assertEqual(result[1].children[0].value, "Heading 2")
 
 
 if __name__ == '__main__':

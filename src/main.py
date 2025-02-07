@@ -8,84 +8,57 @@ from title_extractor import extract_title
 
 dir_static = "./static"
 dir_public = "./public"
-markdown_file = "./content/majesty/index.md"
+source_folder = "./content"
 template_file = "./template.html"
-index_html_file = "index.html"
 
 
-# def generate_page_recursive(from_path, template_path, dir_path, index_html):
-#     dest_path = os.path.join(dir_path, index_html)
-#     print(f"Generating page from {from_path} to {
-#           dest_path} using {template_path}")
-
-#     items = os.listdir(from_path)
-
-#     with open(template_file, "r") as f:
-#         template = f.read()
-
-#     with open(template_file, "r") as f:
-#         template_html = f.read()
-
-#     for item in items:
-#         if os.path.isfile(os.path.join(from_path, item)):
-#             print(f"This is a file {item}")
-#             with open(os.path.join(from_path, item), "r") as file:
-#                 markdown = file.read()
-
-#             html_nodes = markdown_to_html_node(markdown)
-
-#             html = html_nodes.to_html()
-
-#             title = extract_title(markdown)
-
-#             template_html = template_html.replace("{{ Title }}", title)
-#             template_html = template_html.replace("{{ Content }}", html)
-
-#             with open(os.path.join(dir_public, item.replace("md", "html")), "w") as f:
-#                 # Ensure directory exists
-#                 os.makedirs(os.path.dirname(dir_public), exist_ok=True)
-
-#             f.write(template_html)
-
-#         else:
-#             print(f"This is directory {item}")
-#             generate_page_recursive(os.path.join(
-#                 from_path, item), template_path, dir_path, index_html)
-
-
-# generate_page_recursive("./content", template_file,
-#                         dir_public, index_html_file)
-
-
-def generate_page(from_path, template_path, dest_path):
+def generate_page_recursively(from_path, template_path, dest_path):
     print(f"Generating page from {from_path} to {
           dest_path} using {template_path}")
 
-    with open(from_path, "r") as f:
-        markdown = f.read()
+    # Create destination directory if it doesn't exist
+    os.makedirs(dest_path, exist_ok=True)
 
-    with open(template_file, "r") as f:
-        template = f.read()
+    # Read template file content once
+    with open(template_path, "r") as f:
+        html_template = f.read()
 
-    html_nodes = markdown_to_html_node(markdown)
+    items = os.listdir(from_path)
 
-    html = html_nodes.to_html()
+    for item in items:
+        source_path = os.path.join(from_path, item)
 
-    title = extract_title(markdown)
+        if os.path.isfile(source_path):
+            # Only process markdown files
+            if item.endswith('.md'):
+                # Create destination path for HTML file
+                dest_file = os.path.join(
+                    dest_path, item.replace(".md", ".html"))
 
-    with open(template_file, "r") as f:
-        template_html = f.read()
+                # Read and process markdown file
+                with open(source_path, "r") as f:
+                    markdown = f.read()
 
-    replacements = {"Title": title, "Content": html}
+                # Extract title and convert markdown to HTML
+                title = extract_title(markdown)
+                html_nodes = markdown_to_html_node(markdown)
+                html_content = html_nodes.to_html()
 
-    for key, value in replacements.items():
-        template_html = template_html.replace("{{ " + key + " }}", value)
+                # Create new HTML content from template
+                final_html = html_template.replace("{{ Title }}", title)
+                final_html = final_html.replace("{{ Content }}", html_content)
 
-    with open(dest_path, "w") as f:
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+                # Write the final HTML file
+                with open(dest_file, "w") as f:
+                    f.write(final_html)
 
-        f.write(template_html)
+        elif os.path.isdir(source_path):
+            # Create corresponding destination directory path
+            new_dest_path = os.path.join(dest_path, item)
+
+            # Recursively process subdirectory
+            generate_page_recursively(
+                source_path, template_path, new_dest_path)
 
 
 def main():
@@ -97,8 +70,7 @@ def main():
     print("Copying static files to public directory...")
     copy_files_recursive(dir_static, dir_public)
 
-    generate_page(markdown_file, template_file,
-                  os.path.join(dir_public, index_html_file))
+    generate_page_recursively("./content", template_file, dir_public)
 
 
 main()
