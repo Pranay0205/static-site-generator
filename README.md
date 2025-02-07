@@ -20,15 +20,46 @@ A Python-based static site generator that converts Markdown files to HTML, with 
 ## Project Structure
 
 ```
-.
-├── main.py                 # Main entry point
-├── block_markdown.py       # Block-level Markdown parsing
-├── inline_markdown.py      # Inline Markdown parsing
-├── markdown_parser.py      # Main Markdown to HTML conversion
-├── htmlnode.py            # HTML node representation
-├── textnode.py            # Text node representation
-├── title_extractor.py     # Markdown title extraction
-└── copy_static.py         # Static file handling
+static-site-generator/
+├── .vscode/
+├── content/
+│   └── majesty/
+│       └── index.md
+├── public/
+│   ├── images/
+│   │   └── rivendell.png
+│   └── majesty/
+│       ├── index.html
+│       ├── index.css
+│       └── index.html
+├── src/
+│   ├── __pycache__/
+│   ├── block_markdown.py
+│   ├── copy_static.py
+│   ├── htmlnode.py
+│   ├── inline_markdown.py
+│   ├── main.py
+│   ├── markdown_parser.py
+│   ├── test_block_markdown.py
+│   ├── test_htmlnode.py
+│   ├── test_leafnode.py
+│   ├── test_markdown_parser.py
+│   ├── test_parentnode.py
+│   ├── test_split_delimiter.py
+│   ├── test_textnode.py
+│   ├── test_title_extractor.py
+│   ├── textnode.py
+│   └── title_extractor.py
+├── static/
+│   ├── images/
+│   │   └── rivendell.png
+│   ├── index.css
+│   └── index.html
+├── .gitignore
+├── main.sh
+├── README.md
+├── template.html
+└── test.sh
 ```
 
 ## Installation
